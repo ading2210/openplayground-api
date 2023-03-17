@@ -1,7 +1,7 @@
 # Python OpenPlayground API
-![PyPi Version](https://img.shields.io/pypi/v/openplayground-api.svg)
+[![PyPi Version](https://img.shields.io/pypi/v/openplayground-api.svg)](https://pypi.org/project/openplayground-api/)
 
-This is an unoffical API wrapper for the website [OpenPlayground](https://nat.dev).
+This is an unoffical API wrapper for the website [OpenPlayground](https://nat.dev), which provides access to a wide array of AI models for free.
 
 ## Features:
 This library has the following abilities:
@@ -9,7 +9,7 @@ This library has the following abilities:
  - Generate text
 
 ## Installation:
-You can install this libaray by running the following command:
+You can install this library by running the following command:
 ```
 pip3 install openplayground-api
 ```
