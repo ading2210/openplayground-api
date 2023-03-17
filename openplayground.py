@@ -1,4 +1,4 @@
-import requests
+import requests, json
 
 class Model:
   def __init__(self, data):
@@ -6,6 +6,17 @@ class Model:
     self.name = data.get("name")
     self.version = data.get("version")
     self.params = data.get("parameters")
+    self.tag = f"{self.provider}:{self.name}"
+  
+  def resolve_params(self, kwargs):
+    final_params = {}
+    for param_name in self.params:
+      if param_name in kwargs:
+        final_params[param_name] = kwargs[param_name]
+      else:
+        final_params[param_name] = self.params[param_name]["value"]
+
+    return final_params
 
 class Client:
   api_url = "https://nat.dev/api"
@@ -27,9 +38,31 @@ class Client:
     r = self.session.get(models_url)
     data = r.json()
 
-    models = []
+    models = {}
     for key in data:
       model = Model(data[key])
-      models.append(model)
+      models[key] = model
 
     return models
+  
+  def generate(self, model, prompt, **kwargs):
+    if not isinstance(model, Model):
+      model = self.models[model]
+
+    generation_url = self.api_url + "/stream"
+    payload = {
+      "models": [
+        {
+          "name": model.tag,
+          "parameters": model.resolve_params(kwargs),
+          "provider": model.provider,
+          "tag": model.tag,
+        }
+      ],
+      "prompt": prompt
+    }
+    r = self.session.post(generation_url, json=payload, stream=True)
+
+    for chunk in r.iter_content(chunk_size=8192):
+      r.raise_for_status()
+      yield chunk
