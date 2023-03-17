@@ -4,4 +4,4 @@ import sys
 cookie = sys.argv[1]
 
 client = openplayground.Client(cookie)
-print(client.get_models())
+print(client.models)

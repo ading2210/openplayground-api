@@ -1,5 +1,12 @@
 import requests
 
+class Model:
+  def __init__(self, data):
+    self.provider = data.get("provider")
+    self.name = data.get("name")
+    self.version = data.get("version")
+    self.params = data.get("parameters")
+
 class Client:
   api_url = "https://nat.dev/api"
 
@@ -12,8 +19,17 @@ class Client:
       "Authorization": f"Bearer {token}"
     }
     self.session.headers.update(self.headers)
+
+    self.models = self.get_models()
   
   def get_models(self):
     models_url = self.api_url + "/all_models"
     r = self.session.get(models_url)
-    return r.json()
+    data = r.json()
+
+    models = []
+    for key in data:
+      model = Model(data[key])
+      models.append(model)
+
+    return models
