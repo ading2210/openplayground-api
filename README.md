@@ -1,4 +1,6 @@
 # Python OpenPlayground API
+![PyPi Version](https://img.shields.io/pypi/v/openplayground-api.svg)
+
 This is an unoffical API wrapper for the website [OpenPlayground](https://nat.dev).
 
 ## Features:
@@ -6,8 +8,14 @@ This library has the following abilities:
  - List models
  - Generate text
 
+## Installation:
+You can install this libaray by running the following command:
+```
+pip3 install openplayground-api
+```
+
 ## Documentation:
-An example of how to use this library can be found in `/example.py`.
+An example of how to use this library can be found in `/examples/example.py`.
 
 ### The `Model` Class:
 The `openplayground.Model` class describes a model that is available to the user. Valid attributes are:
