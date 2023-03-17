@@ -1,10 +1,11 @@
 import openplayground
 import sys
 
-cookie = sys.argv[1]
+token = sys.argv[1]
 
-client = openplayground.Client(cookie)
+client = openplayground.Client(token)
 
 prompt = "Summarize the GNU GPL v3."
 for chunk in client.generate("openai:text-davinci-003", prompt):
-  print (chunk)
+  if chunk["event"] == "infer":
+    print(chunk["message"], end="", flush=True)

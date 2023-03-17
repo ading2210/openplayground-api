@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, re
 
 class Model:
   def __init__(self, data):
@@ -63,6 +63,13 @@ class Client:
     }
     r = self.session.post(generation_url, json=payload, stream=True)
 
-    for chunk in r.iter_content(chunk_size=8192):
+    for chunk in r.iter_content(chunk_size=None):
       r.raise_for_status()
-      yield chunk
+      
+      chunk_str = chunk.decode()
+      data_regex = r"event:(\S+)\sdata:(.+)\s"
+      matches = re.findall(data_regex, chunk_str)[0]
+
+      data = json.loads(matches[1])
+      data["event"] = matches[0]
+      yield data
