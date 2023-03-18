@@ -73,3 +73,60 @@ class Client:
       data = json.loads(matches[1])
       data["event"] = matches[0]
       yield data
+
+class Auth:
+    # sign in
+    api_url = "https://clerk.nat.dev/v1/client/sign_ins/"
+
+    def __init__(self):
+        self.session = requests.Session()
+        self.headers = {
+            # "Host": "clerk.nat.dev",
+            # "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0",
+            # "Accept": "*/*",
+            # "Accept-Language": "en-US,en;q=0.5",
+            # "Accept-Encoding": "gzip, deflate, br",
+            # "content-type": "application/x-www-form-urlencoded",
+            # "Content-Length": "34",
+            # "Connection": "keep-alive",
+            # "Cookie": "__client_uat=0",
+            # "Sec-Fetch-Dest": "empty",
+            # "Sec-Fetch-Mode": "cors",
+            # "Sec-Fetch-Site": "same-site",
+            "Origin": "https://accounts.nat.dev",
+        }
+        self.session.params={
+            "_clerk_js_version": "4.32.5",
+        },
+
+        self.session.headers.update(self.headers)
+    
+    def login_part_1(self, email_address):
+        self.data= {
+            "identifier": email_address,
+        }
+
+        res = self.session.post(self.api_url, self.data)
+        self.session.cookies = res.cookies
+        self.api_url_sia = res.json()["response"]["id"]
+        self.email_id = res.json()["client"]["sign_in_attempt"]["supported_first_factors"][0]["email_address_id"]
+
+    # send otp email
+    def login_part_2(self):
+        self.data = {
+            "email_address_id": self.email_id,
+            "strategy": "email_code",            
+        }
+        self.session.post(self.api_url + self.api_url_sia + '/prepare_first_factor', self.data)
+    
+    # otp process
+    def login_part_3(self, code):
+        self.data = {
+            "strategy": "email_code",
+            "code": code,          
+        }
+        res = self.session.post(self.api_url + self.api_url_sia + '/attempt_first_factor', self.data)
+        token = res.json()["client"]["sessions"][0]["last_active_token"]["jwt"]
+        return token
+
+
