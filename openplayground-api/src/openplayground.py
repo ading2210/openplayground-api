@@ -6,7 +6,7 @@ class Model:
     self.name = data.get("name")
     self.version = data.get("version")
     self.params = data.get("parameters")
-    self.tag = f"{self.provider}:{self.name}"
+    self.tag = f"{self.provider.strip()}:{self.name.strip()}"
   
   def resolve_params(self, kwargs):
     final_params = {}
