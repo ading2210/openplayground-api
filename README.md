@@ -41,4 +41,4 @@ The `openplayground.Client.generate` function generates some text given a model 
 The values returned from this function are streamed and expressed in a dictionary.
 
 ## Copyright:
-This project is licensed under the [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.txt). All code has been written by me, [ading2210](https://github.com/ading2210).
+This project is licensed under the [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.txt). Most of the code has been written by me, [ading2210](https://github.com/ading2210). A list of all the contributors can be found [here](https://github.com/ading2210/openplayground-api/graphs/contributors).
