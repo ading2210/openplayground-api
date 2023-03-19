@@ -1,3 +1,3 @@
-[submodule "openplayground-termux"]
-	path = openplayground-termux
-	url = https://github.com/liej6799/openplayground-termux
+[submodule "openplayground-cli"]
+	path = openplayground-cli
+	url = https://github.com/liej6799/openplayground-cli
