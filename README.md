@@ -25,8 +25,13 @@ The `openplayground.Model` class describes a model that is available to the user
  - `tag` - A string that combines the provider and name in this format: `<provider>:<name>`. Example: `openai:text-davinci-003`
  - `params` - A dictionary containing possible parameters for the model.
 
+### Logging In With an Email:
+The `openplayground.Auth` class can be used to get your token using an OTP code emailed to you. 
+
+The `openplayground.Auth.login_part_1` function sends an email containing the OTP code to the specificed email address. Once you have the OTP code, you can use the `openplayground.Auth.login_part_2` function to get your token from that OPT code.
+
 ### Initializing the Client:
-The `openplayground.Client` class accepts one argument, which is your account's token. Your token can be obtained from the `__session` field in your browser's cookies.
+The `openplayground.Client` class accepts one argument, which is your account's token. Your token can be obtained from the `__session` field in your browser's cookies, or using the `openplayground.Auth` class as show above.
 
 ### Downloading the Available Models:
 The `openplayground.Client.get_models` function fetches the available models from `https://nat.dev/api/all_models`, and returns a dictionary of `openplayground.Model` objects.

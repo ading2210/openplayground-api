@@ -82,7 +82,7 @@ class Auth:
     self.headers = {
       "Host": "clerk.nat.dev",
       "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0",
-      "Origin": "https://accounts.nat.dev",
+      "Origin": "https://accounts.nat.dev"
     }
     self.session.params = {
       "_clerk_js_version": "4.32.5"
