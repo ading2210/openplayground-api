@@ -81,8 +81,8 @@ class Auth:
     def __init__(self):
         self.session = requests.Session()
         self.headers = {
-            # "Host": "clerk.nat.dev",
-            # "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0",
+            #"Host": "clerk.nat.dev",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0",
             # "Accept": "*/*",
             # "Accept-Language": "en-US,en;q=0.5",
             # "Accept-Encoding": "gzip, deflate, br",
@@ -111,8 +111,6 @@ class Auth:
         self.api_url_sia = res.json()["response"]["id"]
         self.email_id = res.json()["client"]["sign_in_attempt"]["supported_first_factors"][0]["email_address_id"]
 
-    # send otp email
-    def login_part_2(self):
         self.data = {
             "email_address_id": self.email_id,
             "strategy": "email_code",            
@@ -120,7 +118,7 @@ class Auth:
         self.session.post(self.api_url + self.api_url_sia + '/prepare_first_factor', self.data)
     
     # otp process
-    def login_part_3(self, code):
+    def login_part_2(self, code):
         self.data = {
             "strategy": "email_code",
             "code": code,          

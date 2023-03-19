@@ -20,6 +20,6 @@ setuptools.setup(
   python_requires=">=3.6",
   py_modules=["openplayground"],
   package_dir={"": "openplayground-api/src"},
-  install_requires=["python-dotenv"],
+  install_requires=[],
   url="https://github.com/ading2210/openplayground-api"
 )
