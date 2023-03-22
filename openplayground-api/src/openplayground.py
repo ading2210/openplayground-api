@@ -1,4 +1,6 @@
-import requests, json, re
+import requests, json, re, warnings
+
+user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0"
 
 class Model:
   def __init__(self, data):
@@ -24,7 +26,7 @@ class Client:
   def __init__(self, token):
     self.session = requests.Session()
     self.headers = {
-      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0",
+      "User-Agent": user_agent,
       "Referrer": "https://nat.dev/",
       "Host": "nat.dev",
       "Authorization": f"Bearer {token}"
@@ -81,40 +83,61 @@ class Auth:
     self.session = requests.Session()
     self.headers = {
       "Host": "clerk.nat.dev",
-      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0",
+      "User-Agent": user_agent,
       "Origin": "https://accounts.nat.dev"
     }
     self.session.params = {
-      "_clerk_js_version": "4.32.5"
+      "_clerk_js_version": "4.32.6"
     }
 
     self.session.headers.update(self.headers)
   
+  def check_errors(self, r):
+    data = r.json()
+    if r.status_code != 200:
+      error_code = data["errors"][0]["code"]
+      error_message = data["errors"][0]["long_message"]
+      raise RuntimeError(f"{error_code}: {error_message}")
+  
   #send verification email
-  def login_part_1(self, email_address):
-    self.data= {
+  def send_otp_code(self, email_address):
+    payload = {
       "identifier": email_address,
     }
 
-    res = self.session.post(self.api_url, self.data)
-    self.session.cookies = res.cookies
-    self.api_url_sia = res.json()["response"]["id"]
-    self.email_id = res.json()["client"]["sign_in_attempt"]["supported_first_factors"][0]["email_address_id"]
+    r = self.session.post(self.api_url, data=payload)
+    data = r.json()
+    self.check_errors(r)
 
-    self.data = {
-      "email_address_id": self.email_id,
+    self.api_url_sia = data["response"]["id"]
+    email_id = data["client"]["sign_in_attempt"]["supported_first_factors"][0]["email_address_id"]
+
+    payload = {
+      "email_address_id": email_id,
       "strategy": "email_code"
     }
-    self.session.post(self.api_url + self.api_url_sia + '/prepare_first_factor', self.data)
+    self.session.post(self.api_url + self.api_url_sia + "/prepare_first_factor", data=payload)
   
   #otp process
-  def login_part_2(self, code):
-    self.data = {
+  def verify_otp_code(self, otp_code):
+    payload = {
       "strategy": "email_code",
-      "code": code,
+      "code": otp_code.strip()
     }
-    res = self.session.post(self.api_url + self.api_url_sia + '/attempt_first_factor', self.data)
-    token = res.json()["client"]["sessions"][0]["last_active_token"]["jwt"]
+    r = self.session.post(self.api_url + self.api_url_sia + "/attempt_first_factor", data=payload)
+    data = r.json()
+    self.check_errors(r)
+
+    if r.status_code != 200:
+      print(r.text)
+
+    token = data["client"]["sessions"][0]["last_active_token"]["jwt"]
     return token
-
-
+  
+  #old function names, deprecated
+  def login_part_1(self, email_address):
+    warnings.warn("Auth.login_part_1 is deprecated, use Auth.send_otp_code instead.")
+    return self.send_otp_code(email_address)
+  def login_part_2(self, code):
+    warnings.warn("Auth.login_part_2 is deprecated, use Auth.verify_otp_code instead.")
+    return self.verify_otp_code(code)

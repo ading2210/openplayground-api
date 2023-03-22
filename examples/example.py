@@ -13,9 +13,9 @@ if len(sys.argv) <= 1:
 
 if args.email:
   auth = openplayground.Auth()
-  auth.login_part_1(args.email)
-  otp_key = input("enter otp key: ")
-  token = auth.login_part_2(otp_key)
+  auth.send_otp_code(args.email)
+  otp_code = input("enter otp key: ")
+  token = auth.verify_otp_code(otp_code)
 if args.token:
   token = args.token
 

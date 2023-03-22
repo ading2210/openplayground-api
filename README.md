@@ -5,6 +5,7 @@ This is an unoffical API wrapper for the website [OpenPlayground](https://nat.de
 
 ## Features:
 This library has the following abilities:
+ - Log in using OTP code
  - List models
  - Generate text
 
@@ -28,7 +29,7 @@ The `openplayground.Model` class describes a model that is available to the user
 ### Logging In With an Email:
 The `openplayground.Auth` class can be used to get your token using an OTP code emailed to you. 
 
-The `openplayground.Auth.login_part_1` function sends an email containing the OTP code to the specificed email address. Once you have the OTP code, you can use the `openplayground.Auth.login_part_2` function to get your token from that OPT code.
+The `openplayground.Auth.send_otp_code` function sends an email containing the OTP code to the specificed email address. Once you have the OTP code, you can use the `openplayground.Auth.verify_otp_code` function to get your token from that OTP code.
 
 ### Initializing the Client:
 The `openplayground.Client` class accepts one argument, which is your account's token. Your token can be obtained from the `__session` field in your browser's cookies, or using the `openplayground.Auth` class as show above.
