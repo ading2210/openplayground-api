@@ -8,6 +8,7 @@ setuptools.setup(
   name="openplayground-api",
   version="0.0.3",
   author="ading2210",
+  license="GPLv3",
   description=" A reverse engineered API wrapper for OpenPlayground (nat.dev)",
   long_description=long_description,
   long_description_content_type="text/markdown",
