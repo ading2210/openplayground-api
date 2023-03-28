@@ -6,7 +6,7 @@ long_description = (base_path / "README.md").read_text()
 
 setuptools.setup(
   name="openplayground-api",
-  version="0.0.3",
+  version="0.1.0",
   author="ading2210",
   license="GPLv3",
   description=" A reverse engineered API wrapper for OpenPlayground (nat.dev)",
@@ -21,6 +21,8 @@ setuptools.setup(
   python_requires=">=3.6",
   py_modules=["openplayground"],
   package_dir={"": "openplayground-api/src"},
-  install_requires=[],
+  install_requires=[
+    "pycryptodome"
+  ],
   url="https://github.com/ading2210/openplayground-api"
 )

@@ -1,4 +1,9 @@
-import requests, json, re, warnings
+import requests, json, re, warnings, random
+
+from Crypto.Random import get_random_bytes
+from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Hash import SHA256
+from Crypto.Cipher import AES
 
 user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0"
 
@@ -23,7 +28,10 @@ class Model:
 class Client:
   api_url = "https://nat.dev/api"
 
-  def __init__(self, token):
+  def __init__(self, email, token):
+    self.email = email
+    self.token = token
+
     self.session = requests.Session()
     self.headers = {
       "User-Agent": user_agent,
@@ -34,6 +42,16 @@ class Client:
     self.session.headers.update(self.headers)
 
     self.models = self.get_models()
+  
+  def get_xsession(self, data):
+    data_bytes = json.dumps(data).encode()
+    salt = get_random_bytes(16)
+    iv = get_random_bytes(12)
+
+    aes_key = PBKDF2(self.email.encode(), salt, 32, count=10000, hmac_hash_module=SHA256)
+    cipher = AES.new(aes_key, AES.MODE_GCM, iv)
+    encrypted_data, tag = cipher.encrypt_and_digest(data_bytes)
+    return f"{encrypted_data.hex()}:{salt.hex()}:{iv.hex()}:{tag.hex()}"
   
   def get_models(self):
     models_url = self.api_url + "/all_models"
@@ -52,6 +70,22 @@ class Client:
       model = self.models[model]
 
     generation_url = self.api_url + "/stream"
+    xsession_data = {
+      "navigator": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0",
+        "language": "en-US",
+        "platform": "Linux x86_64",
+        "vendor": "",
+        "hardwareConcurrency": 2
+      },
+      "prompt": prompt,
+      "p": random.randint(0, 100),
+      "q": random.randint(0, 100),
+      "mode": 1
+    }
+    headers = {
+      "X-Session": self.get_xsession(xsession_data)
+    }
     payload = {
       "models": [
         {
@@ -63,7 +97,7 @@ class Client:
       ],
       "prompt": prompt
     }
-    r = self.session.post(generation_url, json=payload, stream=True)
+    r = self.session.post(generation_url, json=payload, stream=True, headers=headers)
 
     for chunk in r.iter_content(chunk_size=None):
       r.raise_for_status()

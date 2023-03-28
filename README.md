@@ -4,7 +4,7 @@
 This is an unoffical API wrapper for the website [OpenPlayground](https://nat.dev), which provides access to a wide array of AI models for free, including ChatGPT, GPT-4, and Claude.
 
 ## Notice:
-OpenPlayground has recently announced that they are going to starting deleting accounts that access their API via automated means (probably as as a direct response to this library). Its not apparent how they plan to enforce this, but for now, you should be fine as long as you don't send to many requests. They've also recently been requiring SMS verification upon signup, but this can easily be bypassed by signing in using a Google account. 
+OpenPlayground has recently announced that they are going to starting deleting accounts that access their API via automated means (probably as as a direct response to this library). You should be fine as long as you don't send to many requests, since this library is able to bypass their bot detection by spoofing the `X-Session` header. They've also recently been requiring SMS verification upon signup, but this can easily be bypassed by signing in using a Google account. 
 
 ![screenshot from their discord server](https://media.discordapp.net/attachments/1072352756481929316/1088019955322196048/image.png)
 
@@ -35,8 +35,8 @@ The `openplayground.Model` class describes a model that is available to the user
 The `openplayground.Auth` class can be used to get your token using an OTP code emailed to you. Note that the following examples assume that `auth` is the name of your `openplayground.Auth` class.
 
 ```python
+import openplayground
 auth = openplayground.Auth()
-auth.send_otp_code("sample@example.com")
 ```
 
 #### Sending the OTP Code:
@@ -55,16 +55,17 @@ token = auth.verify_otp_code()
 ```
 
 ### Using the Client:
-The `openplayground.Client` class accepts one argument, which is your account's token. Your token can be obtained from the `__session` field in your browser's cookies, or using the `openplayground.Auth` class as shown above.
+The `openplayground.Client` class accepts two arguments, which is your account's email and its token. Your token can be obtained from the `__session` field in your browser's cookies, or using the `openplayground.Auth` class as shown above.
 
 ```python
-client = openplayground.Client(token)
+import openplayground
+client = openplayground.Client(email, token)
 ```
 
 Note that the following examples assume `client` is the name of your `openplayground.Client` instance.
 
 #### Downloading the Available Models:
-The `client.get_models` function fetches the available models from `https://nat.dev/api/all_models`, and returns a dictionary of `openplayground.Model` objects. The client downloads the available models upon initialization and stores it in `client.models`, so calling this function shouldn't be nessicary. 
+The `client.get_models` function fetches the available models from `https://nat.dev/api/all_models`, and returns a dictionary of `openplayground.Model` objects. The client downloads the available models upon initialization and stores it in `client.models`, so calling this function shouldn't be necessary. 
 
 Some popular model tags are:
  - OpenAI: `openai:gpt-4`, `openai:gpt-3.5-turbo`, `openai:text-davinci-003`
