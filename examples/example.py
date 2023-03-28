@@ -10,11 +10,8 @@ args = parser.parse_args()
 if len(sys.argv) <= 1:
   print("This program requires arguments!")
   sys.exit(1)
-if not args.email:
-  print("You need to specify your email!")
-  sys.exit(1)
 
-email = args.email
+email = args.email or ""
 if args.token:
   token = args.token
 else:
@@ -24,7 +21,7 @@ else:
   token = auth.verify_otp_code(otp_code)
   print("Your token: " + token)
 
-client = openplayground.Client(email, token)
+client = openplayground.Client(token, email=email)
 prompt = "Summarize the GNU GPL v3."
 
 for chunk in client.generate("openai:gpt-3.5-turbo", prompt, maximum_length=1000):

@@ -6,7 +6,7 @@ long_description = (base_path / "README.md").read_text()
 
 setuptools.setup(
   name="openplayground-api",
-  version="0.1.0",
+  version="0.1.1",
   author="ading2210",
   license="GPLv3",
   description=" A reverse engineered API wrapper for OpenPlayground (nat.dev)",

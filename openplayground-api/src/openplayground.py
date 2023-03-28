@@ -28,7 +28,7 @@ class Model:
 class Client:
   api_url = "https://nat.dev/api"
 
-  def __init__(self, email, token):
+  def __init__(self, token, email=""):
     self.email = email
     self.token = token
 

@@ -55,11 +55,11 @@ token = auth.verify_otp_code()
 ```
 
 ### Using the Client:
-The `openplayground.Client` class accepts two arguments, which is your account's email and its token. Your token can be obtained from the `__session` field in your browser's cookies, or using the `openplayground.Auth` class as shown above.
+The `openplayground.Client` class accepts two arguments, which are your account's token and its email. Your token can be obtained from the `__session` field in your browser's cookies, or using the `openplayground.Auth` class as shown above. The email field is optional, but filling it out might reduce the chances of this library being detected.
 
 ```python
 import openplayground
-client = openplayground.Client(email, token)
+client = openplayground.Client(token, email=email)
 ```
 
 Note that the following examples assume `client` is the name of your `openplayground.Client` instance.
